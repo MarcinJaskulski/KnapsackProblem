@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace ProblemPlecakowy
 {
@@ -69,14 +70,14 @@ namespace ProblemPlecakowy
                 tab = new int[0,0]; // bo inaczej będzie błąd, że nie zainicjalizowałem tabicy
             }
 
-            //for(int i=0; i<tab[0,1]; i++)
-            //{
-            //    for(int j=0; j<2; j++)
-            //    {
-            //        Console.Write(tab[i, j] + " " );
-            //    }
-            //    Console.Write("\n");
-            //}
+            for (int i = 0; i < tab[0, 1]; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    Console.Write(tab[i, j] + " ");
+                }
+                Console.Write("\n");
+            }
 
             sr.Close();
         }
@@ -107,8 +108,8 @@ namespace ProblemPlecakowy
             Console.Write("\n");
 
         }
-
-        static void ZrobieToW5minut(ref int[,] tab, ref int[,] V_tab) // jednak w 8 ... + szukanie przedmiotów do plecaka
+        //v XDDDD
+        static void ClearSolution(ref int[,] tab, ref int[,] V_tab) // jednak w 8 ... + szukanie przedmiotów do plecaka
         {
             List<int> result = new List<int>();
             int x = tab[0, 0]-1;
@@ -134,13 +135,60 @@ namespace ProblemPlecakowy
 
         static void BruteForce(ref int[,] tab)
         {
-           
+            int n = tab[0, 1];
+            int C = tab[0, 0];
+            List<int>[] solution;//lista rozwiązań
+            List<int>[] BestSolution;//najlepsze rozwiązanie
+            solution = new List<int>[2];
+            solution[0] = new List<int>();
+            solution[1] = new List<int>();
+            BestSolution = new List<int>[2];
+            BestSolution[0] = new List<int>();
+            BestSolution[1] = new List<int>();
+
+
+            //  BestSolution[0].Add(0);
+            //     BestSolution[1].Add(0);//dopóki nic tutaj nie będzie, a żeby nie wywalał błąd
+            for (int i=0;i<MathF.Pow(2,n)+1;i++) //generowanie liczb binarnych od 0 do 2^n +1 celem wygenerowania wszystkich możliwych podziałów zbioru
+            {
+                int y = i;
+                int count = 1;
+               while(y>0) //przeliczamy binarnie
+                {
+                    int x = y % 2; //reszta z dzielenia
+
+                    if (x == 1) {
+                        try
+                        {
+                            solution[0].Add(tab[count, 0]);
+                            solution[1].Add(tab[count, 1]);
+                        }
+                        catch (Exception) { };
+                            }
+                    y = y / 2;
+                    count++;
+                }
+                //mamy podział zbioru- teraz sprawdzamy czy się nadaje
+                if (BestSolution[0] != null)
+                {
+                    if (solution[0].Sum() > BestSolution[0].Sum() && solution[1].Sum() <= C)
+                    {
+                        BestSolution = solution;
+                    }
+                }
+                else BestSolution = solution;
+                solution[0].Clear();
+                solution[1].Clear();
+                count = 1;
+            }
         }
 
 
 
         static void Main(string[] args)
         {
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+
             string path = @"dane.txt";
             //Generate(path); // w tej funckji należy zmenić parametry, aby generować więcej, bądź inaczej
 
@@ -150,10 +198,15 @@ namespace ProblemPlecakowy
             int[,] V_tab = new int[tab[0,0]+1, tab[0,1]+1]; // inicjacja tablicy w której będa zapisywane wynikie ze wzorów Bellmana
 
             CreativeVTab(ref tab, ref V_tab); // tworzenie macierzy z wartościami ze wzoru Bellmana
-
-            ZrobieToW5minut(ref tab, ref V_tab); // szukanie przedmiotów do plecaka
-
-
+            sw.Start();
+            ClearSolution(ref tab, ref V_tab); // szukanie przedmiotów do plecaka
+            sw.Stop();
+            Console.WriteLine("Wzor Bellmana:" + sw.ElapsedMilliseconds + "\n");
+            sw.Reset();
+            sw.Start();
+            BruteForce(ref tab);
+            sw.Stop();
+            Console.WriteLine("Brute Force:" + sw.ElapsedMilliseconds + "\n");
             Console.Read();
         }
     }
