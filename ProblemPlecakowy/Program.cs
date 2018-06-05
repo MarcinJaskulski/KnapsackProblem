@@ -8,9 +8,9 @@ namespace ProblemPlecakowy
 {
     class Program
     {
-        static void Generate(string path) // generowanie przedmiotów 
+        static void Generate(string path, int C, int n) // generowanie przedmiotów 
         {
-            int C = 10, n = 10; // Pojemność plecaka; ilość elementów
+             // C- Pojemność plecaka; n-ilość elementów
             int p, w; // pojemność; wartość generowanych elementów
 
             StreamWriter sw = new StreamWriter(path);
@@ -70,14 +70,14 @@ namespace ProblemPlecakowy
                 tab = new int[0,0]; // bo inaczej będzie błąd, że nie zainicjalizowałem tabicy
             }
 
-            for (int i = 0; i < tab[0, 1]; i++)
-            {
-                for (int j = 0; j < 2; j++)
-                {
-                    Console.Write(tab[i, j] + " ");
-                }
-                Console.Write("\n");
-            }
+            //for (int i = 0; i < tab[0, 1]; i++)
+            //{
+            //    for (int j = 0; j < 2; j++)
+            //    {
+            //        Console.Write(tab[i, j] + " ");
+            //    }
+            //    Console.Write("\n");
+            //}
 
             sr.Close();
         }
@@ -101,11 +101,11 @@ namespace ProblemPlecakowy
                         V_tab[j, i] = Math.Max(V_tab[j, i - 1], V_tab[j - tab[i, 1], i - 1] + tab[i,0]);
                     }
 
-                    Console.Write(V_tab[j, i] + " ");
+                 //   Console.Write(V_tab[j, i] + " ");
                 }
-                Console.Write("\n");
+               // Console.Write("\n");
             }
-            Console.Write("\n");
+          //  Console.Write("\n");
 
         }
         //v XDDDD
@@ -124,7 +124,7 @@ namespace ProblemPlecakowy
                 }
                 else
                 {
-                    Console.Write(y + " " );
+                    //Console.Write(y + " " );
                     result.Add(y);
 
                     x -= tab[y, 1];
@@ -188,26 +188,62 @@ namespace ProblemPlecakowy
         static void Main(string[] args)
         {
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-
+            
             string path = @"dane.txt";
-            //Generate(path); // w tej funckji należy zmenić parametry, aby generować więcej, bądź inaczej
+            int n = 100000;
+            int C = 100;
+            ////Stale N
+            //Console.WriteLine("f(C)\n");
 
-            int[,] tab; // [0,0] zawiera C; [0,1] zawiera n . Bardzo ważne, bo tablica nie jest od <0,n>, tylko <1, n+1>
-            ReadTab(path, out tab);
+            //for (C = 100; C <= 1000; C += 100)
+            //{
+            //    Console.WriteLine("C=" + C + "\n");
+            //    Generate(path, C, n); // w tej funckji należy zmenić parametry, aby generować więcej, bądź inaczej
 
-            int[,] V_tab = new int[tab[0,0]+1, tab[0,1]+1]; // inicjacja tablicy w której będa zapisywane wynikie ze wzorów Bellmana
+            //    int[,] tab; // [0,0] zawiera C; [0,1] zawiera n . Bardzo ważne, bo tablica nie jest od <0,n>, tylko <1, n+1>
+            //    ReadTab(path, out tab);
 
-            CreativeVTab(ref tab, ref V_tab); // tworzenie macierzy z wartościami ze wzoru Bellmana
-            sw.Start();
-            ClearSolution(ref tab, ref V_tab); // szukanie przedmiotów do plecaka
-            sw.Stop();
-            Console.WriteLine("Wzor Bellmana:" + sw.ElapsedMilliseconds + "\n");
-            sw.Reset();
-            sw.Start();
-            BruteForce(ref tab);
-            sw.Stop();
-            Console.WriteLine("Brute Force:" + sw.ElapsedMilliseconds + "\n");
+            //    int[,] V_tab = new int[tab[0, 0] + 1, tab[0, 1] + 1]; // inicjacja tablicy w której będa zapisywane wynikie ze wzorów Bellmana
+
+            //    CreativeVTab(ref tab, ref V_tab); // tworzenie macierzy z wartościami ze wzoru Bellmana
+            //    sw.Reset();
+            //    sw.Start();
+            //    ClearSolution(ref tab, ref V_tab); // szukanie przedmiotów do plecaka
+            //    sw.Stop();
+            //    Console.WriteLine("Wzor Bellmana:" + sw.ElapsedMilliseconds + "\n");
+            //    //sw.Reset();
+            //    //sw.Start();
+            //    //BruteForce(ref tab);
+            //    //sw.Stop();
+            //    //Console.WriteLine("Brute Force:" + sw.ElapsedMilliseconds + "\n");
+            //    //  Console.Read();
+            //}
+            //STALA POJEMNOSC PLECAKA
+            Console.WriteLine("f(n)\n");
+            C = 1000;
+                for ( n = 200000; n <= 500000; n +=30000) {
+                Console.WriteLine("n=" + n + "\n");
+                Generate(path, C, n); // w tej funckji należy zmenić parametry, aby generować więcej, bądź inaczej
+
+                int[,] tab; // [0,0] zawiera C; [0,1] zawiera n . Bardzo ważne, bo tablica nie jest od <0,n>, tylko <1, n+1>
+                ReadTab(path, out tab);
+
+                int[,] V_tab = new int[tab[0, 0] + 1, tab[0, 1] + 1]; // inicjacja tablicy w której będa zapisywane wynikie ze wzorów Bellmana
+
+                CreativeVTab(ref tab, ref V_tab); // tworzenie macierzy z wartościami ze wzoru Bellmana
+                sw.Reset();
+                sw.Start();
+                ClearSolution(ref tab, ref V_tab); // szukanie przedmiotów do plecaka
+                sw.Stop();
+                Console.WriteLine("Wzor Bellmana:" + sw.ElapsedMilliseconds + "\n");
+                //sw.Reset();
+                //sw.Start();
+                //BruteForce(ref tab);
+                //sw.Stop();
+                //Console.WriteLine("Brute Force:" + sw.ElapsedMilliseconds + "\n");
+              //  Console.Read();
+            }
             Console.Read();
-        }
-    }
+    }        }
+
 }
